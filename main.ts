@@ -1,10 +1,15 @@
+enum ActionKind {
+    Walking,
+    Idle,
+    Jumping
+}
 namespace SpriteKind {
     export const Gap = SpriteKind.create()
     export const Wall = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     player1Sprite.y += -10
-    animation.setAction(player1Sprite, ActionKind.Jumping)
+    animation.setAction(player1Sprite, ActionKind.Walking)
 })
 function AddWalls2 (bool2: boolean) {
     Wally = 40
@@ -52,7 +57,7 @@ function setUpPlayer1 () {
         . . c b d d d d d 5 5 5 b b . . 
         . . . c c c c c c c c b b . . . 
         `, SpriteKind.Player)
-    anim = animation.createAnimation(ActionKind.Jumping, 25)
+    anim = animation.createAnimation(ActionKind.Walking, 25)
     anim.addAnimationFrame(img`
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
@@ -165,7 +170,7 @@ function setUpPlayer1 () {
 }
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     player1Sprite.x += -10
-    animation.setAction(player1Sprite, ActionKind.Jumping)
+    animation.setAction(player1Sprite, ActionKind.Walking)
 })
 function SetUpAnimations () {
     setUpPlayer1()
@@ -276,11 +281,11 @@ function AddWalls (bool3: boolean) {
 }
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     player1Sprite.x += 10
-    animation.setAction(player1Sprite, ActionKind.Jumping)
+    animation.setAction(player1Sprite, ActionKind.Walking)
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     player1Sprite.y += 10
-    animation.setAction(player1Sprite, ActionKind.Jumping)
+    animation.setAction(player1Sprite, ActionKind.Walking)
 })
 let Wall4: Sprite = null
 let Wall5: Sprite = null
@@ -291,48 +296,6 @@ let animationTimer = 0
 let Wall1: Sprite = null
 let Wally = 0
 let player1Sprite: Sprite = null
-class ActionKind {
-    static Walking: number
-    private ___Walking_is_set: boolean
-    private ___Walking: number
-    get Walking(): number {
-        return this.___Walking_is_set ? this.___Walking : ActionKind.Walking
-    }
-    set Walking(value: number) {
-        this.___Walking_is_set = true
-        this.___Walking = value
-    }
-    
-    static Idle: number
-    private ___Idle_is_set: boolean
-    private ___Idle: number
-    get Idle(): number {
-        return this.___Idle_is_set ? this.___Idle : ActionKind.Idle
-    }
-    set Idle(value: number) {
-        this.___Idle_is_set = true
-        this.___Idle = value
-    }
-    
-    static Jumping: number
-    private ___Jumping_is_set: boolean
-    private ___Jumping: number
-    get Jumping(): number {
-        return this.___Jumping_is_set ? this.___Jumping : ActionKind.Jumping
-    }
-    set Jumping(value: number) {
-        this.___Jumping_is_set = true
-        this.___Jumping = value
-    }
-    
-    public static __initActionKind() {
-        ActionKind.Walking = 0
-        ActionKind.Idle = 1
-        ActionKind.Jumping = 2
-    }
-    
-}
-ActionKind.__initActionKind()
 AddWalls2(true)
 AddWalls(true)
 scene.setBackgroundImage(img`
