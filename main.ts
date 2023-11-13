@@ -7,10 +7,6 @@ namespace SpriteKind {
     export const Gap = SpriteKind.create()
     export const Wall = SpriteKind.create()
 }
-controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    player1Sprite.y += -10
-    animation.setAction(player1Sprite, ActionKind.Walking)
-})
 function AddWalls2 (bool2: boolean) {
     Wally = 40
     if (bool2) {
@@ -168,10 +164,6 @@ function setUpPlayer1 () {
         `)
     animation.attachAnimation(player1Sprite, anim)
 }
-controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
-    player1Sprite.x += -10
-    animation.setAction(player1Sprite, ActionKind.Walking)
-})
 function SetUpAnimations () {
     setUpPlayer1()
 }
@@ -279,14 +271,6 @@ function AddWalls (bool3: boolean) {
         Wall4.setPosition(80, 80)
     }
 }
-controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
-    player1Sprite.x += 10
-    animation.setAction(player1Sprite, ActionKind.Walking)
-})
-controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
-    player1Sprite.y += 10
-    animation.setAction(player1Sprite, ActionKind.Walking)
-})
 let Wall4: Sprite = null
 let Wall5: Sprite = null
 let Wall3: Sprite = null
@@ -296,8 +280,8 @@ let animationTimer = 0
 let Wall1: Sprite = null
 let Wally = 0
 let player1Sprite: Sprite = null
-AddWalls2(true)
-AddWalls(true)
+AddWalls2(false)
+AddWalls(false)
 scene.setBackgroundImage(img`
     99999999999999999999999999999999999999999999999999999999999999999999fff99999fff999999999999999999999999999999999999999999999999999999999999999999999999999999999
     9999999999999999999999999999999999999ffffffffff9999fff99999999999999fff99999fff99999999ffffffff99999999999999999999999999999999999999999999999999999999999999999
