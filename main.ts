@@ -1,7 +1,8 @@
 enum ActionKind {
     Walking,
     Idle,
-    Jumping
+    Jumping,
+    BadGuyWalk
 }
 namespace SpriteKind {
     export const Gap = SpriteKind.create()
@@ -12,33 +13,32 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.setAction(player1Sprite, ActionKind.Walking)
 })
 function AddWalls2 (bool2: boolean) {
-    Wally = 40
+    Wally = 30
     if (bool2) {
         for (let index = 0; index <= 2; index++) {
             Wall1 = sprites.create(img`
-                . . . . . . . . . . . . . . . . 
-                . . . . . . 7 . . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . 7 . . . . . 
-                . . . . . 7 7 7 . 7 7 7 . . . . 
-                . . 7 . . 7 7 7 . 7 7 7 . . . . 
-                . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-                . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-                . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-                . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-                . . 7 7 7 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
+                . . . . . . . 7 7 7 . . . . . . 
+                . . . . . . 7 7 7 7 7 . . . 7 . 
+                . . . . . . 7 7 7 7 7 . . 7 7 7 
+                . 7 . . . . 7 7 7 7 7 . . 7 7 7 
+                7 7 7 . . . 7 7 7 7 7 . 7 7 7 7 
+                7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+                7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+                7 7 7 . . 7 7 7 7 7 7 7 7 7 . . 
+                7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+                7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+                . 7 7 7 7 . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
                 `, SpriteKind.Wall)
-            Wall1.setPosition(index * 20 + 120, Wally)
+            Wall1.setPosition(index * 20 + 130, Wally)
         }
     }
 }
 function setUpPlayer1 () {
-    animationTimer = 250
     player1Sprite = sprites.create(img`
         . . . . . . . . . . b 5 b . . . 
         . . . . . . . . . b 5 b . . . . 
@@ -57,6 +57,7 @@ function setUpPlayer1 () {
         . . c b d d d d d 5 5 5 b b . . 
         . . . c c c c c c c c b b . . . 
         `, SpriteKind.Player)
+    player1Sprite.setPosition(10, 110)
     anim = animation.createAnimation(ActionKind.Walking, 25)
     anim.addAnimationFrame(img`
         . . . . . . . . . . . . . . . . 
@@ -172,130 +173,418 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     player1Sprite.x += -10
     animation.setAction(player1Sprite, ActionKind.Walking)
 })
-function SetUpAnimations () {
-    setUpPlayer1()
+sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Enemy, function (sprite, otherSprite) {
+    timer.throttle("action", 300, function () {
+        MoveUp = !(MoveUp)
+    })
+})
+function KeepPlayer1WithinWalls () {
+    if (player1Sprite.bottom > 120) {
+        player1Sprite.y += -10
+    } else if (player1Sprite.right > 160) {
+        player1Sprite.x += -10
+    } else if (player1Sprite.left < 0) {
+        player1Sprite.x += 10
+    }
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Wall, function (sprite, otherSprite) {
-    player1Sprite.setPosition(5, 110)
+    player1Sprite.setPosition(10, 110)
     game.splash("Don't Touch CACTUS")
 })
 function AddWalls (bool3: boolean) {
-    Wally = 60
+    Wally = 70
     if (bool3) {
-        Wall1 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . 7 . . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . 7 . . . . . 
-            . . . . . 7 7 7 . 7 7 7 . . . . 
-            . . 7 . . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-            . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-            . . 7 7 7 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            `, SpriteKind.Wall)
-        Wall1.setPosition(40, Wally)
-        Wall2 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . 7 . . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . 7 . . . . . 
-            . . . . . 7 7 7 . 7 7 7 . . . . 
-            . . 7 . . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-            . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-            . . 7 7 7 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            `, SpriteKind.Wall)
-        Wall2.setPosition(60, Wally)
-        Wall3 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . 7 . . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . 7 . . . . . 
-            . . . . . 7 7 7 . 7 7 7 . . . . 
-            . . 7 . . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-            . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-            . . 7 7 7 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            `, SpriteKind.Wall)
-        Wall3.setPosition(80, Wally)
-        Wall5 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . 7 . . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . 7 . . . . . 
-            . . . . . 7 7 7 . 7 7 7 . . . . 
-            . . 7 . . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-            . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-            . . 7 7 7 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            `, SpriteKind.Wall)
-        Wall5.setPosition(20, Wally)
+        for (let index = 0; index <= 3; index++) {
+            Wall7 = sprites.create(img`
+                . . . . . . . 7 7 7 . . . . . . 
+                . . . . . . 7 7 7 7 7 . . . 7 . 
+                . . . . . . 7 7 7 7 7 . . 7 7 7 
+                . 7 . . . . 7 7 7 7 7 . . 7 7 7 
+                7 7 7 . . . 7 7 7 7 7 . 7 7 7 7 
+                7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+                7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+                7 7 7 . . 7 7 7 7 7 7 7 7 7 . . 
+                7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+                7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+                . 7 7 7 7 . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                `, SpriteKind.Wall)
+            Wall7.setPosition(index * 20 + 10, Wally)
+        }
         Wall4 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . 7 . . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . 7 . . . . . 
-            . . . . . 7 7 7 . 7 7 7 . . . . 
-            . . 7 . . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-            . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-            . . 7 7 7 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
+            . . . . . . . 7 7 7 . . . . . . 
+            . . . . . . 7 7 7 7 7 . . . 7 . 
+            . . . . . . 7 7 7 7 7 . . 7 7 7 
+            . 7 . . . . 7 7 7 7 7 . . 7 7 7 
+            7 7 7 . . . 7 7 7 7 7 . 7 7 7 7 
+            7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+            7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+            7 7 7 . . 7 7 7 7 7 7 7 7 7 . . 
+            7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+            7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+            . 7 7 7 7 . 7 7 7 7 7 . . . . . 
+            . . . . . . 7 7 7 7 7 . . . . . 
+            . . . . . . 7 7 7 7 7 . . . . . 
+            . . . . . . 7 7 7 7 7 . . . . . 
+            . . . . . . 7 7 7 7 7 . . . . . 
+            . . . . . . 7 7 7 7 7 . . . . . 
             `, SpriteKind.Wall)
-        Wall4.setPosition(80, 80)
+        Wall4.setPosition(70, 90)
     }
 }
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     player1Sprite.x += 10
     animation.setAction(player1Sprite, ActionKind.Walking)
 })
+function SetUpBagGuy2 () {
+    BadGuy2 = sprites.create(img`
+        ........................
+        ........................
+        ........................
+        ........................
+        ..........ffff..........
+        ........ff1111ff........
+        .......fb111111bf.......
+        .......f11111111f.......
+        ......fd11111111df......
+        ......fd11111111df......
+        ......fddd1111dddf......
+        ......fbdbfddfbdbf......
+        ......fcdcf11fcdcf......
+        .......fb111111bf.......
+        ......fffcdb1bdffff.....
+        ....fc111cbfbfc111cf....
+        ....f1b1b1ffff1b1b1f....
+        ....fbfbffffffbfbfbf....
+        .........ffffff.........
+        ...........fff..........
+        ........................
+        ........................
+        ........................
+        ........................
+        `, SpriteKind.Enemy)
+    BadGuy2.setPosition(100, 70)
+    BadGuy2Animation = animation.createAnimation(ActionKind.BadGuyWalk, 100)
+    BadGuy2Animation.addAnimationFrame(img`
+        ........................
+        ........................
+        ........................
+        ........................
+        ..........ffff..........
+        ........ff1111ff........
+        .......fb111111bf.......
+        .......f11111111f.......
+        ......fd11111111df......
+        ......fd11111111df......
+        ......fddd1111dddf......
+        ......fbdbfddfbdbf......
+        ......fcdcf11fcdcf......
+        .......fb111111bf.......
+        ......fffcdb1bdffff.....
+        ....fc111cbfbfc111cf....
+        ....f1b1b1ffff1b1b1f....
+        ....fbfbffffffbfbfbf....
+        .........ffffff.........
+        ...........fff..........
+        ........................
+        ........................
+        ........................
+        ........................
+        `)
+    BadGuy2Animation.addAnimationFrame(img`
+        ........................
+        ........................
+        ........................
+        ........................
+        ..........ffff..........
+        ........ff1111ff........
+        .......fb111111bf.......
+        .......f11111111f.......
+        ......fd11111111df......
+        ......fd11111111df......
+        ......fddd1111dddf......
+        ......fbdbfddfbdbf......
+        ......fcdcf11fcdcf......
+        .......fb111111ffff.....
+        ......fffcdb1bc111cf....
+        ....fc111cbfbf1b1b1f....
+        ....f1b1b1ffffbfbfbf....
+        ....fbfbfffffff.........
+        .........fffff..........
+        ..........fff...........
+        ........................
+        ........................
+        ........................
+        ........................
+        `)
+    BadGuy2Animation.addAnimationFrame(img`
+        ........................
+        ........................
+        ........................
+        ........................
+        ..........ffff..........
+        ........ff1111ff........
+        .......fb111111bf.......
+        .......f11111111f.......
+        ......fd11111111df......
+        ......fd11111111df......
+        ......fddd1111dddf......
+        ......fbdbfddfbdbf......
+        ......fcdcf11fcdcf......
+        .......fb111111bf.......
+        ......fffcdb1bdffff.....
+        ....fc111cbfbfc111cf....
+        ....f1b1b1ffff1b1b1f....
+        ....fbfbffffffbfbfbf....
+        .........ffffff.........
+        ...........fff..........
+        ........................
+        ........................
+        ........................
+        ........................
+        `)
+    BadGuy2Animation.addAnimationFrame(img`
+        ........................
+        ........................
+        ........................
+        ........................
+        ........................
+        ..........ffff..........
+        ........ff1111ff........
+        .......fb111111bf.......
+        .....fffc1111111f.......
+        ...fc111cd1111111f......
+        ...f1b1b1b1111dddf......
+        ...fbfbffcf11fcddf......
+        ......fcf111111bbf......
+        .......ccbdb1b1fcf......
+        .......fffbfbfdff.......
+        ........ffffffff........
+        ........fffffffffff.....
+        .........fffffc111cf....
+        .........fffff1b1b1f....
+        ..........ffffbfbfbf....
+        ...........ffff.........
+        ........................
+        ........................
+        ........................
+        `)
+    BadGuy2Animation.addAnimationFrame(img`
+        ........................
+        ........................
+        ........................
+        ........................
+        ..........ffff..........
+        ........ff1111ff........
+        .......fb111111bf.......
+        .......f11111111f.......
+        ......fd11111111df......
+        ......fd11111111df......
+        ......fddd1111dddf......
+        ......fbdbfddfbdbf......
+        ......fcdcf11fcdcf......
+        .....ffff111111bf.......
+        ....fc111cdb1bdfff......
+        ....f1b1bcbfbfc111cf....
+        ....fbfbfbffff1b1b1f....
+        .........fffffffbfbf....
+        ..........fffff.........
+        ...........fff..........
+        ........................
+        ........................
+        ........................
+        ........................
+        `)
+    BadGuy2Animation.addAnimationFrame(img`
+        ........................
+        ........................
+        ........................
+        ........................
+        ..........ffff..........
+        ........ff1111ff........
+        .......fb111111bf.......
+        .......f11111111f.......
+        ......fd11111111df......
+        ......fd11111111df......
+        ......fddd1111dddf......
+        ......fbdbfddfbdbf......
+        ......fcdcf11fcdcf......
+        .......fb111111bf.......
+        ......fffcdb1bdffff.....
+        ....fc111cbfbfc111cf....
+        ....f1b1b1ffff1b1b1f....
+        ....fbfbffffffbfbfbf....
+        .........ffffff.........
+        ...........fff..........
+        ........................
+        ........................
+        ........................
+        ........................
+        `)
+    animation.attachAnimation(BadGuy2, BadGuy2Animation)
+    animation.setAction(BadGuy2, ActionKind.BadGuyWalk)
+    MoveUp = false
+}
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     player1Sprite.y += 10
     animation.setAction(player1Sprite, ActionKind.Walking)
 })
+function SetUpBadGuy () {
+    BadGuy = sprites.create(img`
+        . . . . c c c c c c . . . . . . 
+        . . . c 6 7 7 7 7 6 c . . . . . 
+        . . c 7 7 7 7 7 7 7 7 c . . . . 
+        . c 6 7 7 7 7 7 7 7 7 6 c . . . 
+        . c 7 c 6 6 6 6 c 7 7 7 c . . . 
+        . f 7 6 f 6 6 f 6 7 7 7 f . . . 
+        . f 7 7 7 7 7 7 7 7 7 7 f . . . 
+        . . f 7 7 7 7 6 c 7 7 6 f c . . 
+        . . . f c c c c 7 7 6 f 7 7 c . 
+        . . c 7 2 7 7 7 6 c f 7 7 7 7 c 
+        . c 7 7 2 7 7 c f c 6 7 7 6 c c 
+        c 1 1 1 1 7 6 f c c 6 6 6 c . . 
+        f 1 1 1 1 1 6 6 c 6 6 6 6 f . . 
+        f 6 1 1 1 1 1 6 6 6 6 6 c f . . 
+        . f 6 1 1 1 1 1 1 6 6 6 f . . . 
+        . . c c c c c c c c c f . . . . 
+        `, SpriteKind.Enemy)
+    BadGuy.setPosition(150, 70)
+    BadGuyAnimation = animation.createAnimation(ActionKind.BadGuyWalk, 100)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . . c c c c c c . . . . . . 
+        . . . c 6 7 7 7 7 6 c . . . . . 
+        . . c 7 7 7 7 7 7 7 7 c . . . . 
+        . c 6 7 7 7 7 7 7 7 7 6 c . . . 
+        . c 7 c 6 6 6 6 c 7 7 7 c . . . 
+        . f 7 6 f 6 6 f 6 7 7 7 f . . . 
+        . f 7 7 7 7 7 7 7 7 7 7 f . . . 
+        . . f 7 7 7 7 6 c 7 7 6 f c . . 
+        . . . f c c c c 7 7 6 f 7 7 c . 
+        . . c 7 2 7 7 7 6 c f 7 7 7 7 c 
+        . c 7 7 2 7 7 c f c 6 7 7 6 c c 
+        c 1 1 1 1 7 6 f c c 6 6 6 c . . 
+        f 1 1 1 1 1 6 6 c 6 6 6 6 f . . 
+        f 6 1 1 1 1 1 6 6 6 6 6 c f . . 
+        . f 6 1 1 1 1 1 1 6 6 6 f . . . 
+        . . c c c c c c c c c f . . . . 
+        `)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . c c c c c c . . . . . . . 
+        . . c 6 7 7 7 7 6 c . . . . . . 
+        . c 7 7 7 7 7 7 7 7 c . . . . . 
+        c 6 7 7 7 7 7 7 7 7 6 c . . . . 
+        c 7 c 6 6 6 6 c 7 7 7 c . . . . 
+        f 7 6 f 6 6 f 6 7 7 7 f . . . . 
+        f 7 7 7 7 7 7 7 7 7 7 f . . . . 
+        . f 7 7 7 7 6 c 7 7 6 f . . . . 
+        . . f c c c c 7 7 6 f c c c . . 
+        . . c 6 2 7 7 7 f c c 7 7 7 c . 
+        . c 6 7 7 2 7 7 c f 6 7 7 7 7 c 
+        . c 1 1 1 1 7 6 6 c 6 6 6 c c c 
+        . c 1 1 1 1 1 6 6 6 6 6 6 c . . 
+        . c 6 1 1 1 1 1 6 6 6 6 6 c . . 
+        . . c 6 1 1 1 1 1 7 6 6 c c . . 
+        . . . c c c c c c c c c c . . . 
+        `)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . . . c c c c c c c . . . . 
+        . . . . c 6 7 7 7 7 7 6 c . . . 
+        . . . c 7 c 6 6 6 6 c 7 6 c . . 
+        . . c 6 7 6 f 6 6 f 6 7 7 c . . 
+        . . c 7 7 7 7 7 7 7 7 7 7 c . . 
+        . . f 7 8 1 f f 1 6 7 7 7 f . . 
+        . . f 6 f 1 f f 1 f 7 7 7 f . . 
+        . . . f f 2 2 2 2 f 7 7 6 f . . 
+        . . c c f 2 2 2 2 7 7 6 f c . . 
+        . c 7 7 7 7 7 7 7 7 c c 7 7 c . 
+        c 7 1 1 1 7 7 7 7 f c 6 7 7 7 c 
+        f 1 1 1 1 1 7 6 f c c 6 6 6 c c 
+        f 1 1 1 1 1 1 6 6 c 6 6 6 c . . 
+        f 6 1 1 1 1 1 6 6 6 6 6 6 c . . 
+        . f 6 1 1 1 1 1 6 6 6 6 c . . . 
+        . . f f c c c c c c c c . . . . 
+        `)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . . . c c c c c c c . . . . 
+        . . . . c 6 7 7 7 7 7 6 c . . . 
+        . . . c 7 c 6 6 6 6 c 7 6 c . . 
+        . . c 6 7 6 f 6 6 f 6 7 7 c . . 
+        . . c 7 7 7 7 7 7 7 7 7 7 c . . 
+        . . f 7 8 1 f f 1 6 7 7 7 f . . 
+        . . f 6 f 1 f f 1 f 7 7 7 f . . 
+        . . . f f 2 2 2 2 f 7 7 6 f . . 
+        . . c c f 2 2 2 2 7 7 6 f c . . 
+        . c 7 7 7 7 7 7 7 7 c c 7 7 c . 
+        c 7 1 1 1 7 7 7 7 f c 6 7 7 7 c 
+        f 1 1 1 1 1 7 6 f c c 6 6 6 c c 
+        f 1 1 1 1 1 1 6 6 c 6 6 6 c . . 
+        f 6 1 1 1 1 1 6 6 6 6 6 6 c . . 
+        . f 6 1 1 1 1 1 6 6 6 6 c . . . 
+        . . f f c c c c c c c c . . . . 
+        `)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . c c c c c c . . . . . . . 
+        . . c 6 7 7 7 7 6 c . . . . . . 
+        . c 7 7 7 7 7 7 7 7 c . . . . . 
+        c 6 7 7 7 7 7 7 7 7 6 c . . . . 
+        c 7 c 6 6 6 6 c 7 7 7 c . . . . 
+        f 7 6 f 6 6 f 6 7 7 7 f . . . . 
+        f 7 7 7 7 7 7 7 7 7 7 f . . . . 
+        . f 7 7 7 7 6 c 7 7 6 f . . . . 
+        . . f c c c c 7 7 6 f c c c . . 
+        . . c 6 2 7 7 7 f c c 7 7 7 c . 
+        . c 6 7 7 2 7 7 c f 6 7 7 7 7 c 
+        . c 1 1 1 1 7 6 6 c 6 6 6 c c c 
+        . c 1 1 1 1 1 6 6 6 6 6 6 c . . 
+        . c 6 1 1 1 1 1 6 6 6 6 6 c . . 
+        . . c 6 1 1 1 1 1 7 6 6 c c . . 
+        . . . c c c c c c c c c c . . . 
+        `)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . . c c c c c c . . . . . . 
+        . . . c 6 7 7 7 7 6 c . . . . . 
+        . . c 7 7 7 7 7 7 7 7 c . . . . 
+        . c 6 7 7 7 7 7 7 7 7 6 c . . . 
+        . c 7 c 6 6 6 6 c 7 7 7 c . . . 
+        . f 7 6 f 6 6 f 6 7 7 7 f . . . 
+        . f 7 7 7 7 7 7 7 7 7 7 f . . . 
+        . . f 7 7 7 7 6 c 7 7 6 f c . . 
+        . . . f c c c c 7 7 6 f 7 7 c . 
+        . . c 7 2 7 7 7 6 c f 7 7 7 7 c 
+        . c 7 7 2 7 7 c f c 6 7 7 6 c c 
+        c 1 1 1 1 7 6 f c c 6 6 6 c . . 
+        f 1 1 1 1 1 6 6 c 6 6 6 6 f . . 
+        f 6 1 1 1 1 1 6 6 6 6 6 c f . . 
+        . f 6 1 1 1 1 1 1 6 6 6 f . . . 
+        . . c c c c c c c c c f . . . . 
+        `)
+    animation.attachAnimation(BadGuy, BadGuyAnimation)
+    animation.setAction(BadGuy, ActionKind.BadGuyWalk)
+    MoveRight = false
+}
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    player1Sprite.setPosition(10, 110)
+    game.splash("Don't get eaten")
+})
+let MoveRight = false
+let BadGuyAnimation: animation.Animation = null
+let BadGuy: Sprite = null
+let BadGuy2Animation: animation.Animation = null
+let BadGuy2: Sprite = null
 let Wall4: Sprite = null
-let Wall5: Sprite = null
-let Wall3: Sprite = null
-let Wall2: Sprite = null
+let Wall7: Sprite = null
+let MoveUp = false
 let anim: animation.Animation = null
-let animationTimer = 0
 let Wall1: Sprite = null
 let Wally = 0
 let player1Sprite: Sprite = null
+setUpPlayer1()
+SetUpBadGuy()
+SetUpBagGuy2()
 AddWalls2(true)
 AddWalls(true)
 scene.setBackgroundImage(img`
@@ -421,19 +710,34 @@ scene.setBackgroundImage(img`
     9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
     `)
 scene.setBackgroundColor(9)
-info.setScore(0)
+info.setScore(30)
 effects.blizzard.startScreenEffect()
-SetUpAnimations()
-player1Sprite.setPosition(5, 110)
 game.onUpdate(function () {
     if (player1Sprite.top < 0) {
         game.over(true)
     }
-    if (player1Sprite.bottom > 120) {
-        player1Sprite.y += -10
-    } else if (player1Sprite.right > 160) {
-        player1Sprite.x += -10
-    } else if (player1Sprite.left < 0) {
-        player1Sprite.x += 10
+    KeepPlayer1WithinWalls()
+    if (MoveRight) {
+        BadGuy.x += 1
+    } else {
+        BadGuy.x += -1
     }
+    if (BadGuy.left < 80) {
+        MoveRight = true
+    } else if (BadGuy.right > 160) {
+        MoveRight = false
+    }
+    if (MoveUp) {
+        BadGuy2.y += 1
+    } else {
+        BadGuy2.y += -1
+    }
+    if (BadGuy2.top < 10) {
+        MoveUp = true
+    } else if (BadGuy2.bottom > 110) {
+        MoveUp = false
+    }
+    timer.throttle("action", 1000, function () {
+        info.changeScoreBy(-1)
+    })
 })
