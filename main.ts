@@ -172,6 +172,15 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     player1Sprite.x += -10
     animation.setAction(player1Sprite, ActionKind.Walking)
 })
+function KeepPlayer1WithinWalls () {
+    if (player1Sprite.bottom > 120) {
+        player1Sprite.y += -10
+    } else if (player1Sprite.right > 160) {
+        player1Sprite.x += -10
+    } else if (player1Sprite.left < 0) {
+        player1Sprite.x += 10
+    }
+}
 function SetUpAnimations () {
     setUpPlayer1()
 }
@@ -232,6 +241,10 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     player1Sprite.y += 10
     animation.setAction(player1Sprite, ActionKind.Walking)
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    player1Sprite.setPosition(10, 110)
+    game.splash("Don't get eaten by snake")
+})
 let Wall4: Sprite = null
 let Wall7: Sprite = null
 let anim: animation.Animation = null
@@ -239,6 +252,26 @@ let animationTimer = 0
 let Wall1: Sprite = null
 let Wally = 0
 let player1Sprite: Sprite = null
+let BadGuy = sprites.create(img`
+    . . . . c c c c c c . . . . . . 
+    . . . c 6 7 7 7 7 6 c . . . . . 
+    . . c 7 7 7 7 7 7 7 7 c . . . . 
+    . c 6 7 7 7 7 7 7 7 7 6 c . . . 
+    . c 7 c 6 6 6 6 c 7 7 7 c . . . 
+    . f 7 6 f 6 6 f 6 7 7 7 f . . . 
+    . f 7 7 7 7 7 7 7 7 7 7 f . . . 
+    . . f 7 7 7 7 6 c 7 7 6 f c . . 
+    . . . f c c c c 7 7 6 f 7 7 c . 
+    . . c 7 2 7 7 7 6 c f 7 7 7 7 c 
+    . c 7 7 2 7 7 c f c 6 7 7 6 c c 
+    c 1 1 1 1 7 6 f c c 6 6 6 c . . 
+    f 1 1 1 1 1 6 6 c 6 6 6 6 f . . 
+    f 6 1 1 1 1 1 6 6 6 6 6 c f . . 
+    . f 6 1 1 1 1 1 1 6 6 6 f . . . 
+    . . c c c c c c c c c f . . . . 
+    `, SpriteKind.Enemy)
+BadGuy.setPosition(150, 70)
+let MoveRight = false
 AddWalls2(true)
 AddWalls(true)
 scene.setBackgroundImage(img`
@@ -372,11 +405,17 @@ game.onUpdate(function () {
     if (player1Sprite.top < 0) {
         game.over(true)
     }
-    if (player1Sprite.bottom > 120) {
-        player1Sprite.y += -10
-    } else if (player1Sprite.right > 160) {
-        player1Sprite.x += -10
-    } else if (player1Sprite.left < 0) {
-        player1Sprite.x += 10
+    KeepPlayer1WithinWalls()
+    timer.after(500, function () {
+        if (MoveRight) {
+            BadGuy.x += 1
+        } else {
+            BadGuy.x += -1
+        }
+    })
+    if (BadGuy.left < 80) {
+        MoveRight = true
+    } else if (BadGuy.right > 160) {
+        MoveRight = false
     }
 })
