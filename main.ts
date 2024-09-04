@@ -450,8 +450,8 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.setAction(player1Sprite, ActionKind.Walking)
 })
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Enemy, function (sprite, otherSprite) {
-    timer.throttle("action", 1000, function () {
-        MoveRight = !(MoveRight)
+    timer.throttle("action", 300, function () {
+        MoveUp = !(MoveUp)
     })
 })
 function KeepPlayer1WithinWalls () {
@@ -525,7 +525,7 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     player1Sprite.setPosition(10, 110)
-    game.splash("Don't get eaten by snake")
+    game.splash("Don't get eaten")
 })
 let Wall4: Sprite = null
 let Wall7: Sprite = null
@@ -536,8 +536,8 @@ let Wally = 0
 let BadGuy2Animation: animation.Animation = null
 let animationTimer = 0
 let player1Sprite: Sprite = null
+let MoveUp = false
 let BadGuy2: Sprite = null
-let MoveRight = false
 let BadGuy: Sprite = null
 BadGuy = sprites.create(img`
     . . . . c c c c c c . . . . . . 
@@ -558,7 +558,7 @@ BadGuy = sprites.create(img`
     . . c c c c c c c c c f . . . . 
     `, SpriteKind.Enemy)
 BadGuy.setPosition(150, 70)
-MoveRight = false
+let MoveRight = false
 SetUpBadGuyAnimations()
 BadGuy2 = sprites.create(img`
     ........................
@@ -586,8 +586,8 @@ BadGuy2 = sprites.create(img`
     ........................
     ........................
     `, SpriteKind.Enemy)
-BadGuy2.setPosition(150, 70)
-let MoveUp = false
+BadGuy2.setPosition(100, 70)
+MoveUp = false
 SetUpBadGuy2Animations()
 AddWalls2(true)
 AddWalls(true)
@@ -742,7 +742,7 @@ game.onUpdate(function () {
             BadGuy2.y += -1
         }
     })
-    if (BadGuy2.top < 40) {
+    if (BadGuy2.top < 10) {
         MoveUp = true
     } else if (BadGuy2.bottom > 110) {
         MoveUp = false
