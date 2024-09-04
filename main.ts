@@ -12,28 +12,28 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.setAction(player1Sprite, ActionKind.Walking)
 })
 function AddWalls2 (bool2: boolean) {
-    Wally = 40
+    Wally = 30
     if (bool2) {
         for (let index = 0; index <= 2; index++) {
             Wall1 = sprites.create(img`
-                . . . . . . . . . . . . . . . . 
-                . . . . . . 7 . . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . 7 . . . . . 
-                . . . . . 7 7 7 . 7 7 7 . . . . 
-                . . 7 . . 7 7 7 . 7 7 7 . . . . 
-                . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-                . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-                . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-                . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-                . . 7 7 7 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
-                . . . . . 7 7 7 . . . . . . . . 
+                . . . . . . . 7 7 7 . . . . . . 
+                . . . . . . 7 7 7 7 7 . . . 7 . 
+                . . . . . . 7 7 7 7 7 . . 7 7 7 
+                . 7 . . . . 7 7 7 7 7 . . 7 7 7 
+                7 7 7 . . . 7 7 7 7 7 . 7 7 7 7 
+                7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+                7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+                7 7 7 . . 7 7 7 7 7 7 7 7 7 . . 
+                7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+                7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+                . 7 7 7 7 . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
                 `, SpriteKind.Wall)
-            Wall1.setPosition(index * 20 + 120, Wally)
+            Wall1.setPosition(index * 20 + 130, Wally)
         }
     }
 }
@@ -176,107 +176,52 @@ function SetUpAnimations () {
     setUpPlayer1()
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Wall, function (sprite, otherSprite) {
-    player1Sprite.setPosition(5, 110)
+    player1Sprite.setPosition(10, 110)
     game.splash("Don't Touch CACTUS")
 })
 function AddWalls (bool3: boolean) {
-    Wally = 60
+    Wally = 70
     if (bool3) {
-        Wall1 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . 7 . . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . 7 . . . . . 
-            . . . . . 7 7 7 . 7 7 7 . . . . 
-            . . 7 . . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-            . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-            . . 7 7 7 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            `, SpriteKind.Wall)
-        Wall1.setPosition(40, Wally)
-        Wall2 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . 7 . . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . 7 . . . . . 
-            . . . . . 7 7 7 . 7 7 7 . . . . 
-            . . 7 . . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-            . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-            . . 7 7 7 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            `, SpriteKind.Wall)
-        Wall2.setPosition(60, Wally)
-        Wall3 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . 7 . . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . 7 . . . . . 
-            . . . . . 7 7 7 . 7 7 7 . . . . 
-            . . 7 . . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-            . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-            . . 7 7 7 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            `, SpriteKind.Wall)
-        Wall3.setPosition(80, Wally)
-        Wall5 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . 7 . . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . 7 . . . . . 
-            . . . . . 7 7 7 . 7 7 7 . . . . 
-            . . 7 . . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-            . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-            . . 7 7 7 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            `, SpriteKind.Wall)
-        Wall5.setPosition(20, Wally)
+        for (let index = 0; index <= 3; index++) {
+            Wall7 = sprites.create(img`
+                . . . . . . . 7 7 7 . . . . . . 
+                . . . . . . 7 7 7 7 7 . . . 7 . 
+                . . . . . . 7 7 7 7 7 . . 7 7 7 
+                . 7 . . . . 7 7 7 7 7 . . 7 7 7 
+                7 7 7 . . . 7 7 7 7 7 . 7 7 7 7 
+                7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+                7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+                7 7 7 . . 7 7 7 7 7 7 7 7 7 . . 
+                7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+                7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+                . 7 7 7 7 . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                . . . . . . 7 7 7 7 7 . . . . . 
+                `, SpriteKind.Wall)
+            Wall7.setPosition(index * 20 + 10, Wally)
+        }
         Wall4 = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . 7 . . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . 7 . . . . . 
-            . . . . . 7 7 7 . 7 7 7 . . . . 
-            . . 7 . . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 . 7 7 7 . . . . 
-            . 7 7 7 . 7 7 7 7 7 7 7 . . . . 
-            . 7 7 7 7 7 7 7 7 7 7 . . . . . 
-            . . 7 7 7 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
-            . . . . . 7 7 7 . . . . . . . . 
+            . . . . . . . 7 7 7 . . . . . . 
+            . . . . . . 7 7 7 7 7 . . . 7 . 
+            . . . . . . 7 7 7 7 7 . . 7 7 7 
+            . 7 . . . . 7 7 7 7 7 . . 7 7 7 
+            7 7 7 . . . 7 7 7 7 7 . 7 7 7 7 
+            7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+            7 7 7 . . . 7 7 7 7 7 7 7 7 7 . 
+            7 7 7 . . 7 7 7 7 7 7 7 7 7 . . 
+            7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+            7 7 7 7 7 7 7 7 7 7 7 . . . . . 
+            . 7 7 7 7 . 7 7 7 7 7 . . . . . 
+            . . . . . . 7 7 7 7 7 . . . . . 
+            . . . . . . 7 7 7 7 7 . . . . . 
+            . . . . . . 7 7 7 7 7 . . . . . 
+            . . . . . . 7 7 7 7 7 . . . . . 
+            . . . . . . 7 7 7 7 7 . . . . . 
             `, SpriteKind.Wall)
-        Wall4.setPosition(80, 80)
+        Wall4.setPosition(70, 90)
     }
 }
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -288,9 +233,7 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.setAction(player1Sprite, ActionKind.Walking)
 })
 let Wall4: Sprite = null
-let Wall5: Sprite = null
-let Wall3: Sprite = null
-let Wall2: Sprite = null
+let Wall7: Sprite = null
 let anim: animation.Animation = null
 let animationTimer = 0
 let Wall1: Sprite = null
@@ -424,7 +367,7 @@ scene.setBackgroundColor(9)
 info.setScore(0)
 effects.blizzard.startScreenEffect()
 SetUpAnimations()
-player1Sprite.setPosition(5, 110)
+player1Sprite.setPosition(10, 110)
 game.onUpdate(function () {
     if (player1Sprite.top < 0) {
         game.over(true)
