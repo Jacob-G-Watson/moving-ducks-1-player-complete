@@ -58,7 +58,6 @@ function setUpPlayer1 () {
         . . . c c c c c c c c b b . . . 
         `, SpriteKind.Player)
     player1Sprite.setPosition(10, 110)
-    animationTimer = 250
     anim = animation.createAnimation(ActionKind.Walking, 25)
     anim.addAnimationFrame(img`
         . . . . . . . . . . . . . . . . 
@@ -269,7 +268,6 @@ function SetUpBagGuy2 () {
         ........................
         `, SpriteKind.Enemy)
     BadGuy2.setPosition(100, 70)
-    animationTimer = 600
     BadGuy2Animation = animation.createAnimation(ActionKind.BadGuyWalk, 100)
     BadGuy2Animation.addAnimationFrame(img`
         ........................
@@ -455,7 +453,6 @@ function SetUpBadGuy () {
         . . c c c c c c c c c f . . . . 
         `, SpriteKind.Enemy)
     BadGuy.setPosition(150, 70)
-    animationTimer = 600
     BadGuyAnimation = animation.createAnimation(ActionKind.BadGuyWalk, 100)
     BadGuyAnimation.addAnimationFrame(img`
         . . . . c c c c c c . . . . . . 
@@ -582,7 +579,6 @@ let Wall4: Sprite = null
 let Wall7: Sprite = null
 let MoveUp = false
 let anim: animation.Animation = null
-let animationTimer = 0
 let Wall1: Sprite = null
 let Wally = 0
 let player1Sprite: Sprite = null
