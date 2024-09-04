@@ -424,7 +424,7 @@ scene.setBackgroundColor(9)
 info.setScore(0)
 effects.blizzard.startScreenEffect()
 SetUpAnimations()
-player1Sprite.setPosition(50, 80)
+player1Sprite.setPosition(5, 110)
 game.onUpdate(function () {
     if (player1Sprite.top < 0) {
         game.over(true)
