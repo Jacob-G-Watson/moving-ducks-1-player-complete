@@ -176,7 +176,7 @@ function SetUpAnimations () {
     setUpPlayer1()
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Wall, function (sprite, otherSprite) {
-    player1Sprite.setPosition(50, 80)
+    player1Sprite.setPosition(5, 110)
     game.splash("Don't Touch CACTUS")
 })
 function AddWalls (bool3: boolean) {
