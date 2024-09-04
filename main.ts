@@ -1,7 +1,8 @@
 enum ActionKind {
     Walking,
     Idle,
-    Jumping
+    Jumping,
+    BadGuyWalk
 }
 namespace SpriteKind {
     export const Gap = SpriteKind.create()
@@ -241,10 +242,125 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     player1Sprite.y += 10
     animation.setAction(player1Sprite, ActionKind.Walking)
 })
+function SetUpBadGuy () {
+    animationTimer = 600
+    BadGuyAnimation = animation.createAnimation(ActionKind.BadGuyWalk, 100)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . . c c c c c c . . . . . . 
+        . . . c 6 7 7 7 7 6 c . . . . . 
+        . . c 7 7 7 7 7 7 7 7 c . . . . 
+        . c 6 7 7 7 7 7 7 7 7 6 c . . . 
+        . c 7 c 6 6 6 6 c 7 7 7 c . . . 
+        . f 7 6 f 6 6 f 6 7 7 7 f . . . 
+        . f 7 7 7 7 7 7 7 7 7 7 f . . . 
+        . . f 7 7 7 7 6 c 7 7 6 f c . . 
+        . . . f c c c c 7 7 6 f 7 7 c . 
+        . . c 7 2 7 7 7 6 c f 7 7 7 7 c 
+        . c 7 7 2 7 7 c f c 6 7 7 6 c c 
+        c 1 1 1 1 7 6 f c c 6 6 6 c . . 
+        f 1 1 1 1 1 6 6 c 6 6 6 6 f . . 
+        f 6 1 1 1 1 1 6 6 6 6 6 c f . . 
+        . f 6 1 1 1 1 1 1 6 6 6 f . . . 
+        . . c c c c c c c c c f . . . . 
+        `)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . c c c c c c . . . . . . . 
+        . . c 6 7 7 7 7 6 c . . . . . . 
+        . c 7 7 7 7 7 7 7 7 c . . . . . 
+        c 6 7 7 7 7 7 7 7 7 6 c . . . . 
+        c 7 c 6 6 6 6 c 7 7 7 c . . . . 
+        f 7 6 f 6 6 f 6 7 7 7 f . . . . 
+        f 7 7 7 7 7 7 7 7 7 7 f . . . . 
+        . f 7 7 7 7 6 c 7 7 6 f . . . . 
+        . . f c c c c 7 7 6 f c c c . . 
+        . . c 6 2 7 7 7 f c c 7 7 7 c . 
+        . c 6 7 7 2 7 7 c f 6 7 7 7 7 c 
+        . c 1 1 1 1 7 6 6 c 6 6 6 c c c 
+        . c 1 1 1 1 1 6 6 6 6 6 6 c . . 
+        . c 6 1 1 1 1 1 6 6 6 6 6 c . . 
+        . . c 6 1 1 1 1 1 7 6 6 c c . . 
+        . . . c c c c c c c c c c . . . 
+        `)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . . . c c c c c c c . . . . 
+        . . . . c 6 7 7 7 7 7 6 c . . . 
+        . . . c 7 c 6 6 6 6 c 7 6 c . . 
+        . . c 6 7 6 f 6 6 f 6 7 7 c . . 
+        . . c 7 7 7 7 7 7 7 7 7 7 c . . 
+        . . f 7 8 1 f f 1 6 7 7 7 f . . 
+        . . f 6 f 1 f f 1 f 7 7 7 f . . 
+        . . . f f 2 2 2 2 f 7 7 6 f . . 
+        . . c c f 2 2 2 2 7 7 6 f c . . 
+        . c 7 7 7 7 7 7 7 7 c c 7 7 c . 
+        c 7 1 1 1 7 7 7 7 f c 6 7 7 7 c 
+        f 1 1 1 1 1 7 6 f c c 6 6 6 c c 
+        f 1 1 1 1 1 1 6 6 c 6 6 6 c . . 
+        f 6 1 1 1 1 1 6 6 6 6 6 6 c . . 
+        . f 6 1 1 1 1 1 6 6 6 6 c . . . 
+        . . f f c c c c c c c c . . . . 
+        `)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . . . c c c c c c c . . . . 
+        . . . . c 6 7 7 7 7 7 6 c . . . 
+        . . . c 7 c 6 6 6 6 c 7 6 c . . 
+        . . c 6 7 6 f 6 6 f 6 7 7 c . . 
+        . . c 7 7 7 7 7 7 7 7 7 7 c . . 
+        . . f 7 8 1 f f 1 6 7 7 7 f . . 
+        . . f 6 f 1 f f 1 f 7 7 7 f . . 
+        . . . f f 2 2 2 2 f 7 7 6 f . . 
+        . . c c f 2 2 2 2 7 7 6 f c . . 
+        . c 7 7 7 7 7 7 7 7 c c 7 7 c . 
+        c 7 1 1 1 7 7 7 7 f c 6 7 7 7 c 
+        f 1 1 1 1 1 7 6 f c c 6 6 6 c c 
+        f 1 1 1 1 1 1 6 6 c 6 6 6 c . . 
+        f 6 1 1 1 1 1 6 6 6 6 6 6 c . . 
+        . f 6 1 1 1 1 1 6 6 6 6 c . . . 
+        . . f f c c c c c c c c . . . . 
+        `)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . c c c c c c . . . . . . . 
+        . . c 6 7 7 7 7 6 c . . . . . . 
+        . c 7 7 7 7 7 7 7 7 c . . . . . 
+        c 6 7 7 7 7 7 7 7 7 6 c . . . . 
+        c 7 c 6 6 6 6 c 7 7 7 c . . . . 
+        f 7 6 f 6 6 f 6 7 7 7 f . . . . 
+        f 7 7 7 7 7 7 7 7 7 7 f . . . . 
+        . f 7 7 7 7 6 c 7 7 6 f . . . . 
+        . . f c c c c 7 7 6 f c c c . . 
+        . . c 6 2 7 7 7 f c c 7 7 7 c . 
+        . c 6 7 7 2 7 7 c f 6 7 7 7 7 c 
+        . c 1 1 1 1 7 6 6 c 6 6 6 c c c 
+        . c 1 1 1 1 1 6 6 6 6 6 6 c . . 
+        . c 6 1 1 1 1 1 6 6 6 6 6 c . . 
+        . . c 6 1 1 1 1 1 7 6 6 c c . . 
+        . . . c c c c c c c c c c . . . 
+        `)
+    BadGuyAnimation.addAnimationFrame(img`
+        . . . . c c c c c c . . . . . . 
+        . . . c 6 7 7 7 7 6 c . . . . . 
+        . . c 7 7 7 7 7 7 7 7 c . . . . 
+        . c 6 7 7 7 7 7 7 7 7 6 c . . . 
+        . c 7 c 6 6 6 6 c 7 7 7 c . . . 
+        . f 7 6 f 6 6 f 6 7 7 7 f . . . 
+        . f 7 7 7 7 7 7 7 7 7 7 f . . . 
+        . . f 7 7 7 7 6 c 7 7 6 f c . . 
+        . . . f c c c c 7 7 6 f 7 7 c . 
+        . . c 7 2 7 7 7 6 c f 7 7 7 7 c 
+        . c 7 7 2 7 7 c f c 6 7 7 6 c c 
+        c 1 1 1 1 7 6 f c c 6 6 6 c . . 
+        f 1 1 1 1 1 6 6 c 6 6 6 6 f . . 
+        f 6 1 1 1 1 1 6 6 6 6 6 c f . . 
+        . f 6 1 1 1 1 1 1 6 6 6 f . . . 
+        . . c c c c c c c c c f . . . . 
+        `)
+    animation.attachAnimation(BadGuy, BadGuyAnimation)
+    animation.setAction(BadGuy, ActionKind.BadGuyWalk)
+}
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     player1Sprite.setPosition(10, 110)
     game.splash("Don't get eaten by snake")
 })
+let BadGuyAnimation: animation.Animation = null
 let Wall4: Sprite = null
 let Wall7: Sprite = null
 let anim: animation.Animation = null
@@ -252,7 +368,8 @@ let animationTimer = 0
 let Wall1: Sprite = null
 let Wally = 0
 let player1Sprite: Sprite = null
-let BadGuy = sprites.create(img`
+let BadGuy: Sprite = null
+BadGuy = sprites.create(img`
     . . . . c c c c c c . . . . . . 
     . . . c 6 7 7 7 7 6 c . . . . . 
     . . c 7 7 7 7 7 7 7 7 c . . . . 
@@ -272,6 +389,7 @@ let BadGuy = sprites.create(img`
     `, SpriteKind.Enemy)
 BadGuy.setPosition(150, 70)
 let MoveRight = false
+SetUpBadGuy()
 AddWalls2(true)
 AddWalls(true)
 scene.setBackgroundImage(img`
